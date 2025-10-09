@@ -158,56 +158,51 @@
 				<div class="row g-3">
 					<!-- バッファロー製品（型番入力） -->
 					<div class="col-12">
-						<div class="row align-items-start">
-							<div class="col-auto">
-								<div class="form-check">
-									<input
-										class="form-check-input"
-										type="radio"
-										name="deviceType"
-										id="device-buffalo-with-model"
-										value="buffalo-with-model"
-										checked={deviceType === 'buffalo-with-model'}
-										onchange={() => handleDeviceTypeChange('buffalo-with-model')}
-									/>
-									<label class="form-check-label" for="device-buffalo-with-model">
-										<strong>バッファロー製品</strong>
-										<div class="small text-muted">型番がわかる場合はこちら</div>
-									</label>
-								</div>
-							</div>
-							<div class="col position-relative">
-								<input
-									type="text"
-									class="form-control"
-									id="old-model-input"
-									placeholder="例: WSR-1166DHP4"
-									value={oldModelNumber}
-									oninput={handleModelInput}
-									onkeydown={handleKeyDown}
-									onblur={handleBlur}
-									autocomplete="off"
-									disabled={deviceType !== 'buffalo-with-model'}
-								/>
-								<div class="form-text small">型番を入力してください（3文字以上で候補を表示）</div>
+						<div class="form-check">
+							<input
+								class="form-check-input"
+								type="radio"
+								name="deviceType"
+								id="device-buffalo-with-model"
+								value="buffalo-with-model"
+								checked={deviceType === 'buffalo-with-model'}
+								onchange={() => handleDeviceTypeChange('buffalo-with-model')}
+							/>
+							<label class="form-check-label" for="device-buffalo-with-model">
+								<strong>バッファロー製品</strong>
+								<div class="small text-muted">型番がわかる場合はこちら</div>
+							</label>
+						</div>
 
-								<!-- オートコンプリート候補リスト -->
-								{#if showSuggestions && suggestions.length > 0}
-									<div class="autocomplete-suggestions">
-										{#each suggestions as suggestion, index}
-											<button
-												type="button"
-												class="autocomplete-item {index === selectedSuggestionIndex
-													? 'active'
-													: ''}"
-												onclick={() => selectSuggestion(suggestion)}
-											>
-												{suggestion}
-											</button>
-										{/each}
-									</div>
-								{/if}
-							</div>
+						<div class="mt-2 position-relative">
+							<input
+								type="text"
+								class="form-control"
+								id="old-model-input"
+								placeholder="例: WSR-1166DHP4"
+								value={oldModelNumber}
+								oninput={handleModelInput}
+								onkeydown={handleKeyDown}
+								onblur={handleBlur}
+								autocomplete="off"
+								disabled={deviceType !== 'buffalo-with-model'}
+							/>
+							<div class="form-text small">型番を入力してください（3文字以上で候補を表示）</div>
+
+							<!-- オートコンプリート候補リスト -->
+							{#if showSuggestions && suggestions.length > 0}
+								<div class="autocomplete-suggestions">
+									{#each suggestions as suggestion, index}
+										<button
+											type="button"
+											class="autocomplete-item {index === selectedSuggestionIndex ? 'active' : ''}"
+											onclick={() => selectSuggestion(suggestion)}
+										>
+											{suggestion}
+										</button>
+									{/each}
+								</div>
+							{/if}
 						</div>
 					</div>
 
