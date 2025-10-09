@@ -14,12 +14,52 @@
 	let cameras = $state<{ id: string; label: string }[]>([]);
 	let selectedCamera = $state('');
 	let cameraPermissionError = $state('');
+	let suggestions = $state<string[]>([]);
+	let showSuggestions = $state(false);
+	let selectedSuggestionIndex = $state(-1);
 
 	// 製品タイプ判定用の型番プレフィックス定義
 	const PRODUCT_TYPE_PATTERNS = {
 		親機: ['WSR', 'WXR', 'WTR', 'WHR', 'WZR'],
 		中継機: ['WEX', 'WEM']
 	};
+
+	// 型番マスターリスト（実際の製品に合わせて拡張）
+	const MODEL_NUMBER_LIST = [
+		// WSRシリーズ（親機）
+		'WSR-5400AX6S',
+		'WSR-3200AX4S',
+		'WSR-1800AX4S',
+		'WSR-1500AX2S',
+		'WSR-6000AX8',
+		'WSR-5400AX6',
+		'WSR-3200AX4',
+		'WSR-1800AX4',
+		// WXRシリーズ（親機）
+		'WXR-6000AX12S',
+		'WXR-5950AX12',
+		'WXR-5700AX7S',
+		'WXR-6000AX12B',
+		// WTRシリーズ（親機）
+		'WTR-M2133HS',
+		'WTR-M2133HP',
+		// WHRシリーズ（親機）
+		'WHR-1166DHP4',
+		'WHR-G301N',
+		// WZRシリーズ（親機）
+		'WZR-1750DHP2',
+		'WZR-1166DHP4',
+		// WEXシリーズ（中継機）
+		'WEX-1800AX4EA',
+		'WEX-1800AX4',
+		'WEX-733DHP2',
+		'WEX-733DHP',
+		'WEX-1166DHPS',
+		'WEX-1166DHP',
+		// WEMシリーズ（中継機）
+		'WEM-1266',
+		'WEM-1266WP'
+	].sort();
 
 	onMount(async () => {
 		// HTTPSでない場合の警告
@@ -162,15 +202,75 @@
 			stopScanning();
 		}
 		inputMethod = method;
+		suggestions = [];
+		showSuggestions = false;
+	}
+
+	function handleModelInput(event: Event) {
+		const input = (event.target as HTMLInputElement).value;
+		modelNumber = input;
+
+		// 3文字以上入力されたら候補を表示
+		if (input.length >= 3) {
+			const upperInput = input.toUpperCase();
+			suggestions = MODEL_NUMBER_LIST.filter((model) => model.toUpperCase().startsWith(upperInput));
+			showSuggestions = suggestions.length > 0;
+			selectedSuggestionIndex = -1;
+		} else {
+			suggestions = [];
+			showSuggestions = false;
+		}
+	}
+
+	function selectSuggestion(model: string) {
+		modelNumber = model;
+		suggestions = [];
+		showSuggestions = false;
+		selectedSuggestionIndex = -1;
+	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (!showSuggestions || suggestions.length === 0) return;
+
+		switch (event.key) {
+			case 'ArrowDown':
+				event.preventDefault();
+				selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, suggestions.length - 1);
+				break;
+			case 'ArrowUp':
+				event.preventDefault();
+				selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
+				break;
+			case 'Enter':
+				event.preventDefault();
+				if (selectedSuggestionIndex >= 0) {
+					selectSuggestion(suggestions[selectedSuggestionIndex]);
+				}
+				break;
+			case 'Escape':
+				showSuggestions = false;
+				selectedSuggestionIndex = -1;
+				break;
+		}
+	}
+
+	function handleBlur() {
+		// 少し遅延させて、候補クリックを可能にする
+		setTimeout(() => {
+			showSuggestions = false;
+			selectedSuggestionIndex = -1;
+		}, 200);
 	}
 
 	// 型番が入力されたら自動的に製品タイプを判定
 	$effect(() => {
-		if (modelNumber) {
+		if (modelNumber && modelNumber.trim().length >= 3) {
+			// 3文字以上の場合のみ判定
 			const detectedType = determineProductType(modelNumber);
-			if (detectedType) {
-				productType = detectedType;
-			}
+			productType = detectedType; // 判定結果をセット（空文字列の可能性あり）
+		} else {
+			// 3文字未満または空の場合はリセット
+			productType = '';
 		}
 	});
 </script>
@@ -203,16 +303,37 @@
 
 		{#if inputMethod === 'manual'}
 			<!-- 手動入力 -->
-			<div class="mb-4">
+			<div class="mb-4 position-relative">
 				<label for="model-input" class="form-label">型番を入力してください</label>
 				<input
 					type="text"
 					class="form-control"
 					id="model-input"
-					placeholder="例: WXR-5950AX12"
-					bind:value={modelNumber}
+					placeholder="例: WSR-5400AX6S"
+					value={modelNumber}
+					oninput={handleModelInput}
+					onkeydown={handleKeyDown}
+					onblur={handleBlur}
+					autocomplete="off"
 				/>
-				<div class="form-text">製品本体または箱に記載されている型番を入力してください</div>
+				<div class="form-text">
+					製品本体または箱に記載されている型番を入力してください（3文字以上で候補を表示）
+				</div>
+
+				<!-- オートコンプリート候補リスト -->
+				{#if showSuggestions && suggestions.length > 0}
+					<div class="autocomplete-suggestions">
+						{#each suggestions as suggestion, index}
+							<button
+								type="button"
+								class="autocomplete-item {index === selectedSuggestionIndex ? 'active' : ''}"
+								onclick={() => selectSuggestion(suggestion)}
+							>
+								{suggestion}
+							</button>
+						{/each}
+					</div>
+				{/if}
 			</div>
 		{:else}
 			<!-- QRコード読み取り -->
@@ -280,7 +401,7 @@
 		{/if}
 
 		<!-- 製品タイプ自動判別結果 -->
-		{#if modelNumber}
+		{#if modelNumber && modelNumber.trim().length >= 3}
 			<div class="mb-4">
 				{#if productType}
 					<div class="alert alert-info">
@@ -346,5 +467,43 @@
 
 	.btn-group {
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.autocomplete-suggestions {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		z-index: 1000;
+		max-height: 300px;
+		overflow-y: auto;
+		background-color: white;
+		border: 1px solid #ced4da;
+		border-radius: 0.375rem;
+		box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+		margin-top: 0.25rem;
+	}
+
+	.autocomplete-item {
+		display: block;
+		width: 100%;
+		padding: 0.75rem 1rem;
+		text-align: left;
+		border: none;
+		background-color: white;
+		cursor: pointer;
+		transition: background-color 0.15s ease-in-out;
+		font-family: monospace;
+		font-size: 0.95rem;
+	}
+
+	.autocomplete-item:hover,
+	.autocomplete-item.active {
+		background-color: #0d6efd;
+		color: white;
+	}
+
+	.autocomplete-item:not(:last-child) {
+		border-bottom: 1px solid #e9ecef;
 	}
 </style>
