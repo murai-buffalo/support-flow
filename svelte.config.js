@@ -16,10 +16,14 @@ const config = {
 			// these options are set automatically — see below
 			pages: 'build',
 			assets: 'build',
-			fallback: undefined,
+			fallback: 'index.html', // SPAモード
 			precompress: false,
 			strict: true
-		})
+		}),
+		paths: {
+			base: '',
+			relative: true // 相対パスを使用
+		}
 	}
 };
 

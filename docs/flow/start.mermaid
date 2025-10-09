@@ -1,10 +1,9 @@
-```mermaid
 ---
 config:
   layout: dagre
 ---
-flowchart LR
-    start["start"] --> n1["商品の選び方・仕様"] & n2["設定方法"]
+flowchart TD
+    start["Start"] --> n1["商品の選び方・仕様"] & n2["設定方法"]
     n2 --> n14["購入製品入力"]
     n3["今までのWi-Fiルーターと交換"] --> n10["スマート引っ越し対応"]
     n10 -- Yes --> n8["スマート引っ越し"]
@@ -27,4 +26,3 @@ flowchart LR
     n12@{ shape: subproc}
     n13@{ shape: subproc}
     n15@{ shape: manual-input}
-```
