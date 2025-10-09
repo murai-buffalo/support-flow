@@ -5,6 +5,7 @@
 <FlowLayout>
 	<div class="text-center">
 		<h2 class="mb-4">無線引っ越し設定</h2>
+
 		<div class="alert alert-warning">
 			<i class="bi bi-exclamation-triangle-fill"></i>
 			<h4>無線引っ越し機能を使用します</h4>

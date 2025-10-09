@@ -27,7 +27,7 @@
 			</div>
 
 			<!-- フロー状態表示 -->
-			{#if state.modelNumber || state.selectedProduct || state.selectedUsage || state.smartMovingSupported !== null || state.previouslyUsedSmartMoving !== null}
+			{#if state.modelNumber || state.productType || state.selectedUsage || state.newDeviceSmartMovingSupported || state.oldDeviceSmartMovingSupported || state.previouslyUsedSmartMoving !== null}
 				<div class="card mt-3">
 					<div class="card-body">
 						<h6 class="card-title">現在の状態</h6>
@@ -36,22 +36,27 @@
 								<span class="badge bg-secondary">型番: {state.modelNumber}</span>
 							{/if}
 							{#if state.productType}
-								<span class="badge bg-primary">タイプ: {state.productType}</span>
-							{/if}
-							{#if state.selectedProduct}
-								<span class="badge bg-primary">製品: {state.selectedProduct}</span>
+								<span class="badge bg-secondary">タイプ: {state.productType}</span>
 							{/if}
 							{#if state.selectedUsage}
-								<span class="badge bg-success">用途: {state.selectedUsage}</span>
+								<span class="badge bg-secondary">用途: {state.selectedUsage}</span>
 							{/if}
-							{#if state.smartMovingSupported !== null}
-								<span class="badge bg-info">
-									スマート引っ越し対応: {state.smartMovingSupported ? 'あり' : 'なし'}
+							{#if state.newDeviceSmartMovingSupported}
+								<span class="badge bg-secondary">
+									新機器: {state.newDeviceSmartMovingSupported}
+								</span>
+							{/if}
+							{#if state.oldModelNumber}
+								<span class="badge bg-secondary">旧型番: {state.oldModelNumber}</span>
+							{/if}
+							{#if state.oldDeviceSmartMovingSupported}
+								<span class="badge bg-secondary">
+									旧機器: {state.oldDeviceSmartMovingSupported}
 								</span>
 							{/if}
 							{#if state.previouslyUsedSmartMoving !== null}
-								<span class="badge bg-warning">
-									前回スマート引っ越し使用: {state.previouslyUsedSmartMoving ? 'あり' : 'なし'}
+								<span class="bg-secondary">
+									前回スマート引っ越し: {state.previouslyUsedSmartMoving ? '使用' : '未使用'}
 								</span>
 							{/if}
 							<button class="btn btn-sm btn-outline-secondary ms-auto" onclick={restart}>

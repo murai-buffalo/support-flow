@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
+	import { MODEL_LIST, determineProductType } from '$lib/data/models';
 	import { flowStore } from '$lib/stores/flow';
 	import { Html5Qrcode } from 'html5-qrcode';
 	import { onDestroy, onMount } from 'svelte';
@@ -17,49 +18,6 @@
 	let suggestions = $state<string[]>([]);
 	let showSuggestions = $state(false);
 	let selectedSuggestionIndex = $state(-1);
-
-	// 製品タイプ判定用の型番プレフィックス定義
-	const PRODUCT_TYPE_PATTERNS = {
-		親機: ['WSR', 'WXR', 'WTR', 'WHR', 'WZR'],
-		中継機: ['WEX', 'WEM']
-	};
-
-	// 型番マスターリスト（実際の製品に合わせて拡張）
-	const MODEL_NUMBER_LIST = [
-		// WSRシリーズ（親機）
-		'WSR-5400AX6S',
-		'WSR-3200AX4S',
-		'WSR-1800AX4S',
-		'WSR-1500AX2S',
-		'WSR-6000AX8',
-		'WSR-5400AX6',
-		'WSR-3200AX4',
-		'WSR-1800AX4',
-		// WXRシリーズ（親機）
-		'WXR-6000AX12S',
-		'WXR-5950AX12',
-		'WXR-5700AX7S',
-		'WXR-6000AX12B',
-		// WTRシリーズ（親機）
-		'WTR-M2133HS',
-		'WTR-M2133HP',
-		// WHRシリーズ（親機）
-		'WHR-1166DHP4',
-		'WHR-G301N',
-		// WZRシリーズ（親機）
-		'WZR-1750DHP2',
-		'WZR-1166DHP4',
-		// WEXシリーズ（中継機）
-		'WEX-1800AX4EA',
-		'WEX-1800AX4',
-		'WEX-733DHP2',
-		'WEX-733DHP',
-		'WEX-1166DHPS',
-		'WEX-1166DHP',
-		// WEMシリーズ（中継機）
-		'WEM-1266',
-		'WEM-1266WP'
-	].sort();
 
 	onMount(async () => {
 		// HTTPSでない場合の警告
@@ -122,8 +80,25 @@
 				},
 				(decodedText) => {
 					// QRコードを読み取ったら型番を抽出
-					modelNumber = extractModelNumber(decodedText);
-					stopScanning();
+					const extractedModel = extractModelNumber(decodedText);
+
+					// 型番が認識可能かチェック
+					const detectedType = determineProductType(extractedModel);
+
+					if (detectedType) {
+						// 認識できた場合は型番をセットしてスキャン停止
+						modelNumber = extractedModel;
+						stopScanning();
+					} else {
+						// 認識できない場合はエラーメッセージを表示して継続スキャン
+						scanError = `型番 "${extractedModel}" は認識できません。対応製品のQRコードを読み取ってください。`;
+						// 3秒後にエラーメッセージをクリア
+						setTimeout(() => {
+							if (scanError.includes(extractedModel)) {
+								scanError = '';
+							}
+						}, 3000);
+					}
 				},
 				(errorMessage) => {
 					// エラーは無視（スキャン中は常にエラーが出る）
@@ -162,33 +137,11 @@
 		return qrText;
 	}
 
-	function determineProductType(model: string): string {
-		// 型番から製品タイプを判定（配列ベース）
-		const upperModel = model.toUpperCase().trim();
-
-		// 親機のパターンをチェック
-		for (const prefix of PRODUCT_TYPE_PATTERNS.親機) {
-			if (upperModel.startsWith(prefix)) {
-				return '親機';
-			}
-		}
-
-		// 中継機のパターンをチェック
-		for (const prefix of PRODUCT_TYPE_PATTERNS.中継機) {
-			if (upperModel.startsWith(prefix)) {
-				return '中継機';
-			}
-		}
-
-		return '';
-	}
-
 	function handleNext() {
 		if (!modelNumber || !productType) return;
 
 		flowStore.setModelNumber(modelNumber);
 		flowStore.setProductType(productType);
-		flowStore.setProduct(productType);
 
 		if (productType === '親機') {
 			goto('/usage');
@@ -213,7 +166,7 @@
 		// 3文字以上入力されたら候補を表示
 		if (input.length >= 3) {
 			const upperInput = input.toUpperCase();
-			suggestions = MODEL_NUMBER_LIST.filter((model) => model.toUpperCase().startsWith(upperInput));
+			suggestions = MODEL_LIST.filter((model) => model.toUpperCase().startsWith(upperInput));
 			showSuggestions = suggestions.length > 0;
 			selectedSuggestionIndex = -1;
 		} else {

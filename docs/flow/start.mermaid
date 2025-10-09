@@ -5,24 +5,33 @@ config:
 flowchart TD
     start["Start"] --> n1["商品の選び方・仕様"] & n2["設定方法"]
     n2 --> n14["購入製品入力"]
-    n3["今までのWi-Fiルーターと交換"] --> n10["スマート引っ越し対応"]
-    n10 -- Yes --> n8["スマート引っ越し"]
-    n10 -- No --> n9["無線引っ越し"]
-    n4["故障して買い替え"] --> n11["前回スマート<br>引っ越し使用"]
-    n11 -- Yes --> n8
-    n11 -- No --> n12["親機設定"]
-    n5["新規に設置"] --> n12
-    n6["中継機として使用"] --> n13["中継設定"]
     n14 -- 親機 --> n15["利用方法"]
-    n14 -- 子機 --> n6
-    n15 --> n6 & n4 & n3
-    n15 --> n5
+    n14 -- 中継機 --> n6["中継機として使用"]
+    n15 --> n6 & n4 & n3 & n5
+    
+    n3["今までのWi-Fiルーターと交換"] --> n17["新機器スマート引っ越し対応判定"]
+    n17 -- Yes --> n16["旧機種の型番を入力"]
+    n17 -- No --> n9["無線引っ越し"]
+    n16 --> n10["旧機器スマート引っ越し対応判定"]
+    n10 -- Yes --> n8["スマート引っ越し"]
+    n10 -- No --> n9
+    
+    n4["故障して買い替え"] --> n11["前回スマート引っ越し使用確認"]
+    n11 -- Yes --> n8
+    n11 -- No --> n9
+    
+    n5["新規に設置"] --> n12["親機設定"]
+    n6 --> n13["中継設定"]
+    
     n2@{ shape: diam}
     n14@{ shape: manual-input}
+    n15@{ shape: manual-input}
+    n17@{ shape: diam}
+    n16@{ shape: manual-input}
     n10@{ shape: diam}
+    n11@{ shape: diam}
     n8@{ shape: subproc}
     n9@{ shape: subproc}
-    n11@{ shape: diam}
     n12@{ shape: subproc}
     n13@{ shape: subproc}
-    n15@{ shape: manual-input}
+

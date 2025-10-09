@@ -4,7 +4,8 @@
 	import { flowStore } from '$lib/stores/flow';
 
 	function handleSupport(supported: boolean) {
-		flowStore.setSmartMovingSupported(supported);
+		const statusMessage = supported ? 'スマート引っ越し対応：あり' : 'スマート引っ越し対応：なし';
+		flowStore.setOldDeviceSmartMovingSupported(statusMessage);
 		if (supported) {
 			goto('/smart-moving');
 		} else {

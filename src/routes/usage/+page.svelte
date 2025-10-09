@@ -1,13 +1,32 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
+	import { hasSmartMovingFeature } from '$lib/data/models';
 	import { flowStore } from '$lib/stores/flow';
+	import { get } from 'svelte/store';
 
 	function handleUsage(usage: string) {
 		flowStore.setUsage(usage);
 		if (usage === '今までのWi-Fiルーターと交換') {
-			goto('/smart-moving-support');
+			// 新しい機器がスマート引っ越しに対応しているかチェック
+			const state = get(flowStore);
+			const newDeviceSupportsSmartMoving = hasSmartMovingFeature(state.modelNumber);
+
+			// 新機器のスマート引っ越し対応状態を保存
+			const newDeviceStatus = newDeviceSupportsSmartMoving
+				? 'スマート引っ越し対応：あり'
+				: 'スマート引っ越し対応：なし';
+			flowStore.setNewDeviceSmartMovingSupported(newDeviceStatus);
+
+			if (newDeviceSupportsSmartMoving) {
+				// スマート引っ越し対応機器の場合、旧機器の型番入力画面へ
+				goto('/old-router-input');
+			} else {
+				// 非対応機器の場合、無線引っ越し画面へ
+				goto('/wireless-moving');
+			}
 		} else if (usage === '故障して買い替え') {
+			// 前回スマート引っ越し利用確認画面へ
 			goto('/previous-smart-moving');
 		} else if (usage === '新規に設置') {
 			goto('/main-unit-setup');
