@@ -24,7 +24,7 @@ const config = {
 		}),
 		paths: {
 			base: dev ? '' : '/support-flow',
-			relative: false
+			relative: true
 		}
 	}
 };
