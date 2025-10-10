@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import { flowStore } from '$lib/stores/flow';
 
 	let { children } = $props();
@@ -7,7 +8,7 @@
 
 	function restart() {
 		flowStore.reset();
-		goto('/');
+		goto(`${base}/`);
 	}
 </script>
 
