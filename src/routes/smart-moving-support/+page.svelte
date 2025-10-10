@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
 	import { flowStore } from '$lib/stores/flow';
 
@@ -7,9 +8,9 @@
 		const statusMessage = supported ? 'スマート引っ越し対応：あり' : 'スマート引っ越し対応：なし';
 		flowStore.setOldDeviceSmartMovingSupported(statusMessage);
 		if (supported) {
-			goto('/smart-moving');
+			goto(`${base}/smart-moving`);
 		} else {
-			goto('/wireless-moving');
+			goto(`${base}/wireless-moving`);
 		}
 	}
 </script>

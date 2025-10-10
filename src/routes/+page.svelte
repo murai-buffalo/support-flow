@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
 	import { onMount } from 'svelte';
 
@@ -21,7 +22,7 @@
 			<div class="col-md-6">
 				<button
 					class="btn btn-outline-primary btn-lg w-100 h-100"
-					onclick={() => goto('/product-selection')}
+					onclick={() => goto(`${base}/product-selection`)}
 				>
 					<i class="bi bi-gear-fill d-block mb-2" style="font-size: 2rem;"></i>
 					商品の選び方・仕様
@@ -30,7 +31,7 @@
 			<div class="col-md-6">
 				<button
 					class="btn btn-outline-success btn-lg w-100 h-100"
-					onclick={() => goto('/product-input')}
+					onclick={() => goto(`${base}/product-input`)}
 				>
 					<i class="bi bi-tools d-block mb-2" style="font-size: 2rem;"></i>
 					設定方法

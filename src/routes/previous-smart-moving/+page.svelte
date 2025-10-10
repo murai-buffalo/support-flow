@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
 	import { flowStore } from '$lib/stores/flow';
 
 	function handlePrevious(used: boolean) {
 		flowStore.setPreviousSmartMoving(used);
 		if (used) {
-			goto('/smart-moving');
+			goto(`${base}/smart-moving`);
 		} else {
-			goto('/wireless-moving');
+			goto(`${base}/wireless-moving`);
 		}
 	}
 </script>

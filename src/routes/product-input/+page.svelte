@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
 	import { MODEL_LIST, determineProductType } from '$lib/data/models';
 	import { flowStore } from '$lib/stores/flow';
@@ -144,9 +145,9 @@
 		flowStore.setProductType(productType);
 
 		if (productType === '親機') {
-			goto('/usage');
+			goto(`${base}/usage`);
 		} else if (productType === '中継機') {
-			goto('/relay');
+			goto(`${base}/relay`);
 		}
 	}
 

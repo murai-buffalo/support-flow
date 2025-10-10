@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
 	import { hasSmartMovingFeature } from '$lib/data/models';
 	import { flowStore } from '$lib/stores/flow';
@@ -20,18 +21,18 @@
 
 			if (newDeviceSupportsSmartMoving) {
 				// スマート引っ越し対応機器の場合、旧機器の型番入力画面へ
-				goto('/old-router-input');
+				goto(`${base}/old-router-input`);
 			} else {
 				// 非対応機器の場合、無線引っ越し画面へ
-				goto('/wireless-moving');
+				goto(`${base}/wireless-moving`);
 			}
 		} else if (usage === '故障して買い替え') {
 			// 前回スマート引っ越し利用確認画面へ
-			goto('/previous-smart-moving');
+			goto(`${base}/previous-smart-moving`);
 		} else if (usage === '新規に設置') {
-			goto('/main-unit-setup');
+			goto(`${base}/main-unit-setup`);
 		} else if (usage === '中継機として使用') {
-			goto('/relay');
+			goto(`${base}/relay`);
 		}
 	}
 </script>

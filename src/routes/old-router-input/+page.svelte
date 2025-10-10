@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
 	import { MODEL_LIST, hasSmartMovingFeature } from '$lib/data/models';
 	import { flowStore } from '$lib/stores/flow';
@@ -125,19 +126,19 @@
 
 			if (isSmartMovingCompatible) {
 				// スマート引っ越し対応機種の場合
-				goto('/smart-moving');
+				goto(`${base}/smart-moving`);
 			} else {
 				// 非対応機種の場合、無線引っ越しへ
-				goto('/wireless-moving');
+				goto(`${base}/wireless-moving`);
 			}
 		} else if (deviceType === 'buffalo-unknown') {
 			// バッファロー製品（型番不明）の場合
 			flowStore.setOldDeviceSmartMovingSupported('スマート引っ越し対応：なし（型番不明）');
-			goto('/wireless-moving');
+			goto(`${base}/wireless-moving`);
 		} else {
 			// 他社製品の場合
 			flowStore.setOldDeviceSmartMovingSupported('スマート引っ越し対応：なし（他社製品）');
-			goto('/wireless-moving');
+			goto(`${base}/wireless-moving`);
 		}
 	}
 </script>
