@@ -1,6 +1,8 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
+const dev = process.argv.includes('dev');
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -18,11 +20,11 @@ const config = {
 			assets: 'build',
 			fallback: 'index.html', // SPAモード
 			precompress: false,
-			strict: true
+			strict: false
 		}),
 		paths: {
-			base: '',
-			relative: true // 相対パスを使用
+			base: dev ? '' : '/support-flow',
+			relative: false
 		}
 	}
 };
