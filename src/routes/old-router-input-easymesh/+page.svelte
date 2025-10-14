@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
-	import { MODEL_LIST, hasSmartMovingFeature } from '$lib/data/models';
+	import { MODEL_LIST, hasEasyMeshFeature } from '$lib/data/models';
 	import { flowStore } from '$lib/stores/flow';
 
 	type DeviceType = 'buffalo-with-model' | 'buffalo-unknown' | 'other' | '';
@@ -13,8 +13,8 @@
 	let showSuggestions = $state(false);
 	let selectedSuggestionIndex = $state(-1);
 
-	// スマート引っ越し対応状況を計算
-	let smartMovingStatus = $derived.by(() => {
+	// EasyMesh対応状況を計算
+	let easyMeshStatus = $derived.by(() => {
 		if (!deviceType) {
 			return { isSupported: false, message: '' };
 		}
@@ -23,20 +23,20 @@
 			if (!oldModelNumber.trim()) {
 				return { isSupported: false, message: '' };
 			}
-			const isSupported = hasSmartMovingFeature(oldModelNumber);
+			const isSupported = hasEasyMeshFeature(oldModelNumber);
 			return {
 				isSupported: isSupported,
-				message: isSupported ? 'スマート引っ越し対応：あり' : 'スマート引っ越し対応：なし'
+				message: isSupported ? 'EasyMesh対応：あり' : 'EasyMesh対応：なし'
 			};
 		} else if (deviceType === 'buffalo-unknown') {
 			return {
 				isSupported: false,
-				message: 'スマート引っ越し対応：なし（型番不明）'
+				message: 'EasyMesh対応：なし（型番不明）'
 			};
 		} else {
 			return {
 				isSupported: false,
-				message: 'スマート引っ越し対応：なし（他社製品）'
+				message: 'EasyMesh対応：なし（他社製品）'
 			};
 		}
 	});
@@ -116,64 +116,60 @@
 		// 旧機器の情報を保存
 		flowStore.setOldDevice(deviceType, oldModelNumber);
 
+		// 新機器と旧機器のEasyMesh対応状況を確認
+		const newDeviceSupportsEasyMesh = hasEasyMeshFeature($flowStore.modelNumber || '');
+		let oldDeviceSupportsEasyMesh = false;
+
 		if (deviceType === 'buffalo-with-model') {
-			// スマート引っ越し対応機種かチェック
-			const isSmartMovingCompatible = hasSmartMovingFeature(oldModelNumber);
-			const statusMessage = isSmartMovingCompatible
-				? 'スマート引っ越し対応：あり'
-				: 'スマート引っ越し対応：なし';
+			oldDeviceSupportsEasyMesh = hasEasyMeshFeature(oldModelNumber);
+			const statusMessage = oldDeviceSupportsEasyMesh
+				? 'EasyMesh対応：あり'
+				: 'EasyMesh対応：なし';
 			flowStore.setOldDeviceSmartMovingSupported(statusMessage);
-
-			// 利用方法に応じて遷移先を決定
-			const usage = $flowStore.selectedUsage;
-
-			if (usage === '中継機として使用') {
-				// 中継機の場合は、接続方法選択画面へ
-				goto(`${base}/relay-connection-type`);
-			} else if (isSmartMovingCompatible) {
-				// スマート引っ越し対応機種の場合
-				goto(`${base}/smart-moving`);
-			} else {
-				// 非対応機種の場合、無線引っ越しへ
-				goto(`${base}/wireless-moving`);
-			}
-		} else if (deviceType === 'buffalo-unknown') {
-			// バッファロー製品（型番不明）の場合
-			flowStore.setOldDeviceSmartMovingSupported('スマート引っ越し対応：なし（型番不明）');
-
-			const usage = $flowStore.selectedUsage;
-			if (usage === '中継機として使用') {
-				goto(`${base}/relay-connection-type`);
-			} else {
-				goto(`${base}/wireless-moving`);
-			}
 		} else {
-			// 他社製品の場合
-			flowStore.setOldDeviceSmartMovingSupported('スマート引っ越し対応：なし（他社製品）');
+			const statusMessage = deviceType === 'buffalo-unknown' 
+				? 'EasyMesh対応：なし（型番不明）'
+				: 'EasyMesh対応：なし（他社製品）';
+			flowStore.setOldDeviceSmartMovingSupported(statusMessage);
+		}
 
-			const usage = $flowStore.selectedUsage;
-			if (usage === '中継機として使用') {
-				goto(`${base}/relay-connection-type`);
-			} else {
-				goto(`${base}/wireless-moving`);
-			}
+		// 両方がEasyMesh対応ならEasyMesh設定、そうでなければ中継機設定
+		if (newDeviceSupportsEasyMesh && oldDeviceSupportsEasyMesh) {
+			goto(`${base}/easymesh-setup`);
+		} else {
+			goto(`${base}/relay-setup`);
 		}
 	}
 </script>
 
 <FlowLayout>
 	<div>
-		<h2 class="mb-4">今まで使っていた機器について教えてください</h2>
+		<h2 class="mb-4">既存のWi-Fi機器について教えてください</h2>
 
 		<div class="alert alert-info mb-4">
 			<i class="bi bi-info-circle"></i>
-			旧機器がバッファロー製品で型番がわかる場合、スマート引っ越し機能が利用できる可能性があります。
+			両方の機器がEasyMesh対応の場合、自動でメッシュネットワークを構築できます。
+		</div>
+
+		<!-- 新機器のEasyMesh対応状況表示 -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<i class="bi bi-router"></i> 新機器の対応状況
+			</div>
+			<div class="card-body">
+				<p class="mb-1">
+					<strong>{$flowStore.modelNumber}</strong>
+				</p>
+				<span class="badge {hasEasyMeshFeature($flowStore.modelNumber || '') ? 'bg-success' : 'bg-secondary'}">
+					EasyMesh: {hasEasyMeshFeature($flowStore.modelNumber || '') ? '対応' : '非対応'}
+				</span>
+			</div>
 		</div>
 
 		<!-- デバイスタイプ選択 -->
 		<div class="mb-4">
 			<fieldset>
-				<legend class="form-label">旧機器のタイプを選択してください</legend>
+				<legend class="form-label">既存機器のタイプを選択してください</legend>
 				<div class="row g-3">
 					<!-- バッファロー製品（型番入力） -->
 					<div class="col-12">
@@ -277,16 +273,16 @@
 			</button>
 		</div>
 
-		<!-- スマート引っ越し対応状況の表示 -->
-		{#if smartMovingStatus.message}
-			<div class="alert mt-3 {smartMovingStatus.isSupported ? 'alert-success' : 'alert-warning'}">
+		<!-- EasyMesh対応状況の表示 -->
+		{#if easyMeshStatus.message}
+			<div class="alert mt-3 {easyMeshStatus.isSupported ? 'alert-success' : 'alert-warning'}">
 				<i
-					class="bi {smartMovingStatus.isSupported ? 'bi-check-circle' : 'bi-exclamation-triangle'}"
+					class="bi {easyMeshStatus.isSupported ? 'bi-check-circle' : 'bi-exclamation-triangle'}"
 				></i>
-				{smartMovingStatus.message}
-				{#if !smartMovingStatus.isSupported}
+				{easyMeshStatus.message}
+				{#if !easyMeshStatus.isSupported}
 					<br />
-					無線引っ越し機能での設定となります。
+					従来の中継機設定での接続となります。
 				{/if}
 			</div>
 		{/if}
