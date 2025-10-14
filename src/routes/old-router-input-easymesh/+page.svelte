@@ -122,14 +122,13 @@
 
 		if (deviceType === 'buffalo-with-model') {
 			oldDeviceSupportsEasyMesh = hasEasyMeshFeature(oldModelNumber);
-			const statusMessage = oldDeviceSupportsEasyMesh
-				? 'EasyMesh対応：あり'
-				: 'EasyMesh対応：なし';
+			const statusMessage = oldDeviceSupportsEasyMesh ? 'EasyMesh対応：あり' : 'EasyMesh対応：なし';
 			flowStore.setOldDeviceSmartMovingSupported(statusMessage);
 		} else {
-			const statusMessage = deviceType === 'buffalo-unknown' 
-				? 'EasyMesh対応：なし（型番不明）'
-				: 'EasyMesh対応：なし（他社製品）';
+			const statusMessage =
+				deviceType === 'buffalo-unknown'
+					? 'EasyMesh対応：なし（型番不明）'
+					: 'EasyMesh対応：なし（他社製品）';
 			flowStore.setOldDeviceSmartMovingSupported(statusMessage);
 		}
 
@@ -160,7 +159,11 @@
 				<p class="mb-1">
 					<strong>{$flowStore.modelNumber}</strong>
 				</p>
-				<span class="badge {hasEasyMeshFeature($flowStore.modelNumber || '') ? 'bg-success' : 'bg-secondary'}">
+				<span
+					class="badge {hasEasyMeshFeature($flowStore.modelNumber || '')
+						? 'bg-success'
+						: 'bg-secondary'}"
+				>
 					EasyMesh: {hasEasyMeshFeature($flowStore.modelNumber || '') ? '対応' : '非対応'}
 				</span>
 			</div>
@@ -276,8 +279,7 @@
 		<!-- EasyMesh対応状況の表示 -->
 		{#if easyMeshStatus.message}
 			<div class="alert mt-3 {easyMeshStatus.isSupported ? 'alert-success' : 'alert-warning'}">
-				<i
-					class="bi {easyMeshStatus.isSupported ? 'bi-check-circle' : 'bi-exclamation-triangle'}"
+				<i class="bi {easyMeshStatus.isSupported ? 'bi-check-circle' : 'bi-exclamation-triangle'}"
 				></i>
 				{easyMeshStatus.message}
 				{#if !easyMeshStatus.isSupported}
