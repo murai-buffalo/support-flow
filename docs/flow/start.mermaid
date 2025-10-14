@@ -29,6 +29,14 @@ flowchart TD
     n19 -- "両方対応" --> n20["(n20) EasyMesh設定"]
     n19 -- "どちらか非対応" --> n13
     
+    %% 設定完了後のNPS入力画面への遷移
+    n8 --> n22["(n22) NPS入力"]
+    n9 --> n22
+    n12 --> n22
+    n13 --> n22
+    n20 --> n22
+    n22 --> n23["(n23) 完了"]
+    
     n2@{ shape: diam}
     n14@{ shape: manual-input}
     n15@{ shape: manual-input}
@@ -44,4 +52,6 @@ flowchart TD
     n12@{ shape: subproc}
     n13@{ shape: subproc}
     n20@{ shape: subproc}
+    n22@{ shape: manual-input}
+    n23@{ shape: circle}
 

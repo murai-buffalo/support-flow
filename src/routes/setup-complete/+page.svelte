@@ -26,18 +26,16 @@
 
 	<div class="alert alert-info">
 		<i class="bi bi-info-circle me-2"></i>
-		<strong>今後のご利用について：</strong>
-		<ul class="mb-0">
-			<li>設定に問題がある場合は、製品のマニュアルをご確認ください</li>
-			<li>さらなる設定変更が必要な場合は、各機器の管理画面をご利用ください</li>
-			<li>サポートが必要な場合は、バッファローサポートまでお問い合わせください</li>
-		</ul>
+		<strong>次のステップ：</strong>
+		<p class="mb-0">
+			設定は完了しましたが、より良いサービス提供のため、簡単な満足度調査にご協力ください。
+		</p>
 	</div>
 
 	<div class="text-center mt-4">
-		<button type="button" class="btn btn-primary btn-lg" on:click={() => goto(`${base}/`)}>
-			最初に戻る
-			<i class="bi bi-house ms-2"></i>
+		<button type="button" class="btn btn-primary btn-lg" on:click={() => goto(`${base}/nps`)}>
+			満足度調査へ進む
+			<i class="bi bi-arrow-right ms-2"></i>
 		</button>
 	</div>
 </FlowLayout>

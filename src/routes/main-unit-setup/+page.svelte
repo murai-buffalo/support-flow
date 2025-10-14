@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import FlowLayout from '$lib/components/FlowLayout.svelte';
 </script>
 
@@ -20,6 +22,17 @@
 					<li>Wi-Fi設定（SSID、パスワード）を設定します</li>
 				</ol>
 			</div>
+		</div>
+
+		<div class="text-center mt-4">
+			<button
+				type="button"
+				class="btn btn-success btn-lg"
+				on:click={() => goto(`${base}/setup-complete`)}
+			>
+				設定完了
+				<i class="bi bi-check ms-2"></i>
+			</button>
 		</div>
 	</div>
 </FlowLayout>
