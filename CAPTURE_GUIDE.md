@@ -46,27 +46,51 @@ npm run capture
 
 ## 撮影される画面一覧
 
-### 基本フロー（1-21）
-1. トップページ
-2. 設定方法選択
-3. 製品入力
-4. 製品確認
-5. 利用方法選択
-6. 中継機選択
-7. 中継機設定開始
-8. 準備画面
-9-12. 設定ステップ1-4
-13-17. WPS接続フロー
-18. 設定完了
-19-20. NPS入力
-21. 最終完了
+### シナリオ1: WPS接続フロー（21枚）
 
-### マニュアル接続フロー（22-27）
-22-27. WPSボタンがない場合の手動設定フロー
+完全な成功パスのキャプチャ：
 
-### エラーケース（28-29）
-28. 再試行画面
-29. サポート連絡画面
+1. `scenario1-01_top.png` - トップページ
+2. `scenario1-02_product-input.png` - 製品入力画面
+3. `scenario1-03_product-confirmed.png` - 製品確認
+4. `scenario1-04_usage.png` - 利用方法選択
+5. `scenario1-05_relay.png` - 中継機選択
+6. `scenario1-06_old-router-input.png` - 既存機器入力
+7. `scenario1-07_relay-setup.png` - 中継機設定画面
+8. `scenario1-08_extender-start.png` - 準備画面
+9. `scenario1-09_extender-step1.png` - ステップ1: 設置
+10. `scenario1-10_extender-step2.png` - ステップ2: EasyMeshスイッチOFF
+11. `scenario1-11_extender-step3.png` - ステップ3: Resetボタン
+12. `scenario1-12_extender-step4.png` - ステップ4: 親機確認
+13. `scenario1-13_extender-step4-wps-selected.png` - WPSボタンあり選択
+14. `scenario1-14_extender-wps.png` - WPS接続
+15. `scenario1-15_extender-wps-check.png` - WPS接続確認
+16. `scenario1-16_extender-wps-check-success.png` - 接続成功
+17. `scenario1-17_extender-position.png` - 位置調整
+18. `scenario1-18_setup-complete.png` - 設定完了
+19. `scenario1-19_nps.png` - NPS入力
+20. `scenario1-20_nps-score-selected.png` - NPSスコア選択
+21. `scenario1-21_final-complete.png` - 最終完了
+
+### シナリオ2: マニュアル接続フロー（6枚）
+
+WPSボタンがない場合の手動設定フロー：
+
+1. `scenario2-01_extender-step4-manual-selected.png` - WPSボタンなし選択
+2. `scenario2-02_extender-manual.png` - 手動接続設定
+3. `scenario2-03_extender-manual-login.png` - ログイン画面
+4. `scenario2-04_extender-manual-check.png` - ランプ確認
+5. `scenario2-05_extender-manual-check-success.png` - 接続成功
+6. `scenario2-06_extender-position-manual.png` - 位置調整
+
+### シナリオ3: エラーケース（2枚）
+
+エラー発生時の画面：
+
+1. `scenario3-01_extender-retry.png` - 再試行画面
+2. `scenario3-02_extender-support.png` - サポート連絡画面
+
+**合計: 29枚**
 
 ## カスタマイズ
 
