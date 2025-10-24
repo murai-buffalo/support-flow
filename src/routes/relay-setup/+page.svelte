@@ -9,64 +9,47 @@
 		<h2 class="mb-4">中継機接続設定</h2>
 		<div class="alert alert-info">
 			<i class="bi bi-wifi me-2"></i>
-			従来の中継機として設定
+			従来の中継機として設定します
 		</div>
 	</div>
 
 	<div class="card mb-4">
 		<div class="card-body">
 			<h5 class="card-title">
-				<i class="bi bi-gear me-2"></i>
-				中継機設定手順
+				<i class="bi bi-info-circle me-2"></i>
+				中継機設定について
 			</h5>
 
-			<ol class="list-group list-group-numbered">
-				<li class="list-group-item">
-					<strong>中継機の電源を入れる</strong>
-					<p class="mb-0 text-muted small">
-						新しい中継機をコンセントに接続し、電源を入れてください。
-					</p>
-				</li>
-				<li class="list-group-item">
-					<strong>設定画面にアクセス</strong>
-					<p class="mb-0 text-muted small">
-						スマートフォンまたはPCで中継機の設定画面を開いてください。
-					</p>
-				</li>
-				<li class="list-group-item">
-					<strong>親機を検索して接続</strong>
-					<p class="mb-0 text-muted small">
-						既存の親機のWi-Fiネットワークを選択し、パスワードを入力してください。
-					</p>
-				</li>
-				<li class="list-group-item">
-					<strong>中継機の設置場所を調整</strong>
-					<p class="mb-0 text-muted small">親機と接続したい機器の中間地点に設置してください。</p>
-				</li>
-				<li class="list-group-item">
-					<strong>接続テスト</strong>
-					<p class="mb-0 text-muted small">
-						中継機経由でインターネットに接続できることを確認してください。
-					</p>
-				</li>
-			</ol>
-		</div>
-	</div>
+			<p class="mt-3">
+				中継機として使用することで、既存のWi-Fiルーター（親機）の電波を延長し、Wi-Fi範囲を拡大できます。
+			</p>
 
-	<div class="alert alert-warning">
-		<i class="bi bi-exclamation-triangle me-2"></i>
-		<strong>注意：</strong>
-		中継機接続では、手動での設定が必要です。詳細は製品のマニュアルをご確認ください。
+			<div class="alert alert-success mt-4">
+				<i class="bi bi-check-circle me-2"></i>
+				<strong>このガイドでサポートする内容：</strong>
+				<ul class="mb-0 mt-2">
+					<li>中継機の準備と初期設定</li>
+					<li>親機への接続（WPSまたは手動）</li>
+					<li>接続確認とトラブルシューティング</li>
+					<li>最適な設置位置の調整</li>
+				</ul>
+			</div>
+
+			<div class="alert alert-warning mt-3">
+				<i class="bi bi-clock me-2"></i>
+				<strong>所要時間：</strong>約5〜10分
+			</div>
+		</div>
 	</div>
 
 	<div class="text-center mt-4">
 		<button
 			type="button"
-			class="btn btn-success btn-lg me-3"
-			on:click={() => goto(`${base}/setup-complete`)}
+			class="btn btn-primary btn-lg me-3"
+			on:click={() => goto(`${base}/relay-extender-start`)}
 		>
-			設定完了
-			<i class="bi bi-check ms-2"></i>
+			詳細な手順を見る
+			<i class="bi bi-arrow-right ms-2"></i>
 		</button>
 		<button
 			type="button"
