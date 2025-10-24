@@ -31,7 +31,7 @@ async function wait(ms: number = 1000) {
 // シナリオ1: WPS接続フロー
 async function captureWPSFlow() {
     console.log('\n🎬 シナリオ1: WPS接続フローのキャプチャを開始します...\n');
-    
+
     const browser = await chromium.launch({ headless: false });
     const context = await browser.newContext({
         viewport: { width: 1280, height: 800 },
@@ -173,7 +173,7 @@ async function captureWPSFlow() {
 // シナリオ2: マニュアル接続フロー
 async function captureManualFlow() {
     console.log('\n🎬 シナリオ2: マニュアル接続フローのキャプチャを開始します...\n');
-    
+
     const browser = await chromium.launch({ headless: false });
     const context = await browser.newContext({
         viewport: { width: 1280, height: 800 },
@@ -264,7 +264,7 @@ async function captureManualFlow() {
 // シナリオ3: エラーケース
 async function captureErrorCases() {
     console.log('\n🎬 シナリオ3: エラーケースのキャプチャを開始します...\n');
-    
+
     const browser = await chromium.launch({ headless: false });
     const context = await browser.newContext({
         viewport: { width: 1280, height: 800 },
@@ -298,13 +298,13 @@ async function main() {
     console.log('⚠️  事前に `npm run preview` でサーバーを起動してください\n');
 
     await ensureScreenshotDir();
-    
+
     // シナリオ1: WPS接続フロー
     await captureWPSFlow();
-    
+
     // シナリオ2: マニュアル接続フロー
     await captureManualFlow();
-    
+
     // シナリオ3: エラーケース
     await captureErrorCases();
 
